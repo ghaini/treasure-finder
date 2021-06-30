@@ -6,13 +6,13 @@ import (
 )
 
 type TreasureFinder struct {
-	programFinder   *program.ProgramFinder
-	subdomainFinder *subdomain.SubdomainFinder
+	ProgramFinder   *program.ProgramFinder
+	SubdomainFinder *subdomain.SubdomainFinder
 }
 
 func NewTreasureFinder() *TreasureFinder {
 	return &TreasureFinder{
-		programFinder:   program.NewProgramFinder(),
-		subdomainFinder: subdomain.NewSubdomainFinder(),
+		ProgramFinder:   program.NewProgramFinder(),
+		SubdomainFinder: subdomain.NewSubdomainFinder(),
 	}
 }
