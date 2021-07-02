@@ -63,8 +63,10 @@ func (p *ProgramFinder) GetPrograms() ([]Program, error) {
 				
 				newAssetsIdentifier = append(newAssetsIdentifier, asset)
 			}
-			pr.AssetsIdentifier = newAssetsIdentifier
 
+			pr.AssetsIdentifier = newAssetsIdentifier
+			pr.Name = strings.ToLower(pr.Name)
+			pr.Name = strings.ReplaceAll(pr.Name, " ", "-")
 			if len(newAssetsIdentifier) > 0 {
 				programs = append(programs, pr)
 			}
