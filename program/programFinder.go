@@ -1,6 +1,7 @@
 package program
 
 import (
+	"regexp"
 	"strings"
 )
 
@@ -29,23 +30,37 @@ func NewProgramFinder() *ProgramFinder {
 
 func (p *ProgramFinder) GetPrograms() ([]Program, error) {
 	var programs []Program
+	checkIsIP, err := regexp.Compile("^\\d+\\.\\d+")
+	if err != nil {
+		return nil, err
+	}
+	
 	for _, finder := range p.Finders {
 		program, err := finder.ProgramsList()
 		if err != nil {
 			return nil, err
 		}
-
+		
 		for _, pr := range program{
 			var newAssetsIdentifier []string
 			for _, asset := range pr.AssetsIdentifier  {
-				if !p.withIP && strings.Count(".", asset) == 3 {
+				asset = strings.TrimSpace(asset)
+				asset = strings.ToLower(asset)
+				asset = strings.TrimLeft(asset, "https://")
+				asset = strings.TrimLeft(asset, "http://")
+
+				if !p.withIP && checkIsIP.MatchString(asset) {
 					continue
 				}
 
-				if p.onlyStar && !strings.Contains(asset, "*") {
+				if p.onlyStar && !strings.HasPrefix(asset, "*") {
 					continue
 				}
 
+				if strings.Count(asset, ".") > 4 {
+					continue
+				}
+				
 				newAssetsIdentifier = append(newAssetsIdentifier, asset)
 			}
 			pr.AssetsIdentifier = newAssetsIdentifier
