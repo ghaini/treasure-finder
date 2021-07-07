@@ -22,12 +22,11 @@ func NewBufferover() SubdomainFinderInterface {
 	}
 }
 
-func (b Bufferover) Enumeration(domain string) (map[string]struct{}, error) {
-	result := make(map[string]struct{})
+func (b Bufferover) Enumeration(domain string, subdomains chan<- string) {
 	urlAddress := fmt.Sprintf(b.Url+"?q=.%s", domain)
 	resp, err := http.Get(urlAddress)
 	if err != nil {
-		return result, err
+		return
 	}
 	defer resp.Body.Close()
 
@@ -43,8 +42,6 @@ func (b Bufferover) Enumeration(domain string) (map[string]struct{}, error) {
 		if err != nil {
 			continue
 		}
-		result[subdomain.Hostname()] = struct{}{}
+		subdomains <- subdomain.Hostname()
 	}
-
-	return result, nil
 }

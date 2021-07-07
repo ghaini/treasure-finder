@@ -24,23 +24,22 @@ func NewCrt() SubdomainFinderInterface {
 	}
 }
 
-func (c Crt) Enumeration(domain string) (map[string]struct{}, error) {
-	result := make(map[string]struct{})
+func (c Crt) Enumeration(domain string, subdomains chan<- string) {
 	urlAddress := fmt.Sprintf(c.Url+"?q=%%25.%s&output=json", domain)
 	resp, err := http.Get(urlAddress)
 	if err != nil {
-		return result, err
+		return
 	}
 	defer resp.Body.Close()
 
 	var crtResponse []crtResponse
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return result, err
+		return
 	}
 
 	if err := json.Unmarshal(body, &crtResponse); err != nil {
-		return result, err
+		return
 	}
 	for _, crt := range crtResponse {
 		names := strings.Fields(crt.Name)
@@ -49,9 +48,7 @@ func (c Crt) Enumeration(domain string) (map[string]struct{}, error) {
 			if err != nil {
 				continue
 			}
-			result[subdomain.Hostname()] = struct{}{}
+			subdomains <- subdomain.Hostname()
 		}
 	}
-
-	return result, err
 }

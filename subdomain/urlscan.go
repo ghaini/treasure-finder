@@ -30,12 +30,11 @@ func NewUrlScan() SubdomainFinderInterface {
 	}
 }
 
-func (u UrlScan) Enumeration(domain string) (map[string]struct{}, error) {
-	result := make(map[string]struct{})
+func (u UrlScan) Enumeration(domain string, subdomains chan<- string) {
 	fetchURL := fmt.Sprintf(u.Url+"/search/?q=domain:%s", domain)
 	resp, err := http.Get(fetchURL)
 	if err != nil {
-		return result, err
+		return
 	}
 	defer resp.Body.Close()
 	dec := json.NewDecoder(resp.Body)
@@ -47,8 +46,6 @@ func (u UrlScan) Enumeration(domain string) (map[string]struct{}, error) {
 		if err != nil {
 			continue
 		}
-		result[subdomain.Hostname()] = struct{}{}
+		subdomains <- subdomain.Hostname()
 	}
-
-	return result, nil
 }
