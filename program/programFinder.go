@@ -18,6 +18,7 @@ type ProgramFinder struct {
 type Program struct {
 	Name             string   `json:"name"`
 	AssetsIdentifier []string `json:"assets_identifier"`
+	Bounty           bool     `json:"bounty"`
 }
 
 func NewProgramFinder() *ProgramFinder {
@@ -34,16 +35,16 @@ func (p *ProgramFinder) GetPrograms() ([]Program, error) {
 	if err != nil {
 		return nil, err
 	}
-	
+
 	for _, finder := range p.Finders {
 		program, err := finder.ProgramsList()
 		if err != nil {
 			return nil, err
 		}
-		
-		for _, pr := range program{
+
+		for _, pr := range program {
 			var newAssetsIdentifier []string
-			for _, asset := range pr.AssetsIdentifier  {
+			for _, asset := range pr.AssetsIdentifier {
 				asset = strings.TrimSpace(asset)
 				asset = strings.ToLower(asset)
 				asset = strings.TrimLeft(asset, "https://")
@@ -60,7 +61,7 @@ func (p *ProgramFinder) GetPrograms() ([]Program, error) {
 				if strings.Count(asset, ".") > 4 {
 					continue
 				}
-				
+
 				newAssetsIdentifier = append(newAssetsIdentifier, asset)
 			}
 

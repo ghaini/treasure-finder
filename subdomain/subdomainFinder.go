@@ -14,6 +14,9 @@ func NewSubdomainFinder() *SubdomainFinder {
 	return &SubdomainFinder{
 		[]SubdomainFinderInterface{
 			NewUrlScan(),
+			NewHackerTarget(),
+			NewCrt(),
+			NewThreatcrowd(),
 		},
 	}
 }
