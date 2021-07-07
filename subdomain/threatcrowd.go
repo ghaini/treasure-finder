@@ -3,6 +3,7 @@ package subdomain
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/ghaini/treasure-finder/constants"
 	"net/http"
 	"net/url"
 )
@@ -17,7 +18,7 @@ type threatcrowdResponse struct {
 
 func NewThreatcrowd() SubdomainFinderInterface {
 	return &Threatcrowd{
-		Url: "https://www.threatcrowd.org/searchApi/v2",
+		Url: constants.ThreatcrowdUrl,
 	}
 }
 

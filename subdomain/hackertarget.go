@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
+	"github.com/ghaini/treasure-finder/constants"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -16,10 +17,9 @@ type HackerTarget struct {
 
 func NewHackerTarget() SubdomainFinderInterface {
 	return &HackerTarget{
-		Url: "https://api.hackertarget.com",
+		Url: constants.HackertargetUrl,
 	}
 }
-
 
 func (h HackerTarget) Enumeration(domain string) (map[string]struct{}, error) {
 	result := make(map[string]struct{})

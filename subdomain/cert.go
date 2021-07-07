@@ -3,6 +3,7 @@ package subdomain
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/ghaini/treasure-finder/constants"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -19,12 +20,11 @@ type crtResponse struct {
 
 func NewCrt() SubdomainFinderInterface {
 	return &Crt{
-		Url: "https://crt.sh/",
+		Url: constants.CertUrl,
 	}
 }
 
 func (c Crt) Enumeration(domain string) (map[string]struct{}, error) {
-
 	result := make(map[string]struct{})
 	urlAddress := fmt.Sprintf(c.Url+"?q=%%25.%s&output=json", domain)
 	resp, err := http.Get(urlAddress)
