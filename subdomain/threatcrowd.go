@@ -22,11 +22,12 @@ func NewThreatcrowd() SubdomainFinderInterface {
 	}
 }
 
-func (t Threatcrowd) Enumeration(domain string, subdomains chan<- string) {
+func (t Threatcrowd) Enumeration(domain string) (map[string]struct{}, error) {
+	result := make(map[string]struct{})
 	urlAddress := fmt.Sprintf(t.Url+"/domain/report/?domain=%s", domain)
 	resp, err := http.Get(urlAddress)
 	if err != nil {
-		return
+		return result, err
 	}
 	defer resp.Body.Close()
 
@@ -38,8 +39,8 @@ func (t Threatcrowd) Enumeration(domain string, subdomains chan<- string) {
 		if err != nil {
 			continue
 		}
-		subdomains <- subdomain.Hostname()
+		result[subdomain.Hostname()] = struct{}{}
 	}
 
-	return
+	return result, nil
 }

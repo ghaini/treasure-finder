@@ -22,11 +22,12 @@ func NewCertspotter() SubdomainFinderInterface {
 	}
 }
 
-func (c Certspotter) Enumeration(domain string, subdomains chan<- string) {
+func (c Certspotter) Enumeration(domain string) (map[string]struct{}, error) {
+	result := make(map[string]struct{})
 	urlAddress := fmt.Sprintf(c.Url+"/certs?domain=%s", domain)
 	resp, err := http.Get(urlAddress)
 	if err != nil {
-		return
+		return result, err
 	}
 	defer resp.Body.Close()
 
@@ -39,8 +40,9 @@ func (c Certspotter) Enumeration(domain string, subdomains chan<- string) {
 			if err != nil {
 				continue
 			}
-			subdomains <- subdomain.Hostname()
+			result[subdomain.Hostname()] = struct{}{}
 		}
 	}
 
+	return result, nil
 }
