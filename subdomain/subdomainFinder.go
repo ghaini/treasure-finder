@@ -1,6 +1,9 @@
 package subdomain
 
-import "strings"
+import (
+	"strings"
+	"sync"
+)
 
 type SubdomainFinderInterface interface {
 	Enumeration(domain string) (map[string]struct{}, error)
@@ -21,16 +24,31 @@ func NewSubdomainFinder() *SubdomainFinder {
 	}
 }
 
+
 func (r SubdomainFinder) Enumeration(domain string) ([]string, error) {
 	subdomainsUnionMap := make(map[string]struct{})
+	wg := &sync.WaitGroup{}
+	wg.Add(len(r.Finders))
+	subdomainsMapChan := make(chan map[string]struct{})
 	for _, finder := range r.Finders {
-		subdomainMap, err := finder.Enumeration(domain)
-		if err != nil {
-			return nil, err
-		}
+		go func(wg *sync.WaitGroup) {
+			defer wg.Done()
+			subdomainsMap, err := finder.Enumeration(domain)
+			if err != nil {
+				return
+			}
+			subdomainsMapChan <- subdomainsMap
+		}(wg)
+	}
 
-		for k, v := range subdomainMap {
-			subdomainsUnionMap[k] = v
+	go func() {
+		wg.Wait()
+		close(subdomainsMapChan)
+	}()
+
+	for subdomainsMap := range subdomainsMapChan {
+		for subdomain, _ := range subdomainsMap{
+			subdomainsUnionMap[subdomain] = struct{}{}
 		}
 	}
 
