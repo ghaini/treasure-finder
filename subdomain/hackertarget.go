@@ -21,16 +21,15 @@ func NewHackerTarget() SubdomainFinderInterface {
 	}
 }
 
-func (h HackerTarget) Enumeration(domain string) (map[string]struct{}, error) {
-	result := make(map[string]struct{})
+func (h HackerTarget) Enumeration(domain string, subdomains chan<- string) {
 	urlAddress := fmt.Sprintf(h.Url+"/hostsearch/?q=%s", domain)
 	res, err := http.Get(urlAddress)
 	if err != nil {
-		return result, err
+		return
 	}
 	raw, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		return result, err
+		return
 	}
 	res.Body.Close()
 
@@ -44,9 +43,7 @@ func (h HackerTarget) Enumeration(domain string) (map[string]struct{}, error) {
 		if err != nil {
 			continue
 		}
-		result[subdomain.Hostname()] = struct{}{}
+		subdomains <- subdomain.Hostname()
 	}
-
-	return result, nil
 
 }
