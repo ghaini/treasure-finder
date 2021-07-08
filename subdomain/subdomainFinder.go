@@ -20,6 +20,8 @@ func NewSubdomainFinder() *SubdomainFinder {
 			NewHackerTarget(),
 			NewCrt(),
 			NewThreatcrowd(),
+			NewCertspotter(),
+			NewBufferover(),
 		},
 	}
 }
@@ -31,14 +33,14 @@ func (r SubdomainFinder) Enumeration(domain string) ([]string, error) {
 	wg.Add(len(r.Finders))
 	subdomainsMapChan := make(chan map[string]struct{})
 	for _, finder := range r.Finders {
-		go func(wg *sync.WaitGroup) {
+		go func(finder SubdomainFinderInterface, wg *sync.WaitGroup) {
 			defer wg.Done()
 			subdomainsMap, err := finder.Enumeration(domain)
 			if err != nil {
 				return
 			}
 			subdomainsMapChan <- subdomainsMap
-		}(wg)
+		}(finder, wg)
 	}
 
 	go func() {
