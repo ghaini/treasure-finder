@@ -22,6 +22,10 @@ func NewThreatcrowd() SubdomainFinderInterface {
 	}
 }
 
+func (t Threatcrowd) IsPaidProvider() bool {
+	return false
+}
+
 func (t Threatcrowd) Enumeration(domain string) (map[string]struct{}, error) {
 	result := make(map[string]struct{})
 	urlAddress := fmt.Sprintf(t.Url+"/domain/report/?domain=%s", domain)

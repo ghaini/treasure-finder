@@ -24,6 +24,10 @@ func NewCrt() SubdomainFinderInterface {
 	}
 }
 
+func (c Crt) IsPaidProvider() bool {
+	return false
+}
+
 func (c Crt) Enumeration(domain string) (map[string]struct{}, error) {
 	result := make(map[string]struct{})
 	urlAddress := fmt.Sprintf(c.Url+"?q=%%25.%s&output=json", domain)

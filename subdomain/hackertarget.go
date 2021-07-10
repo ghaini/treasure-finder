@@ -15,6 +15,10 @@ type HackerTarget struct {
 	Url string
 }
 
+func (h HackerTarget) IsPaidProvider() bool {
+	return false
+}
+
 func NewHackerTarget() SubdomainFinderInterface {
 	return &HackerTarget{
 		Url: constants.HackertargetUrl,

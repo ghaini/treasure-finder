@@ -6,16 +6,18 @@ import (
 )
 
 type SubdomainFinderInterface interface {
+	IsPaidProvider() bool
 	Enumeration(domain string) (map[string]struct{}, error)
 }
 
 type SubdomainFinder struct {
-	Finders []SubdomainFinderInterface
+	UsePaidProviders bool
+	Finders          []SubdomainFinderInterface
 }
 
 func NewSubdomainFinder() *SubdomainFinder {
 	return &SubdomainFinder{
-		[]SubdomainFinderInterface{
+		Finders: []SubdomainFinderInterface{
 			NewUrlScan(),
 			NewHackerTarget(),
 			NewCrt(),
@@ -26,8 +28,7 @@ func NewSubdomainFinder() *SubdomainFinder {
 	}
 }
 
-
-func (r SubdomainFinder) Enumeration(domain string) ([]string, error) {
+func (r *SubdomainFinder) Enumeration(domain string) ([]string, error) {
 	subdomainsUnionMap := make(map[string]struct{})
 	wg := &sync.WaitGroup{}
 	wg.Add(len(r.Finders))
@@ -49,7 +50,7 @@ func (r SubdomainFinder) Enumeration(domain string) ([]string, error) {
 	}()
 
 	for subdomainsMap := range subdomainsMapChan {
-		for subdomain, _ := range subdomainsMap{
+		for subdomain, _ := range subdomainsMap {
 			subdomainsUnionMap[subdomain] = struct{}{}
 		}
 	}
@@ -64,4 +65,8 @@ func (r SubdomainFinder) Enumeration(domain string) ([]string, error) {
 	}
 
 	return subdomains, nil
+}
+
+func (r *SubdomainFinder) SetUsePaidProviders() {
+	r.UsePaidProviders = true
 }

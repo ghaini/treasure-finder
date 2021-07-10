@@ -12,6 +12,7 @@ import (
 type Bufferover struct {
 	Url string
 }
+
 type bufferoverResponse struct {
 	Records []string `json:"FDNS_A"`
 }
@@ -20,6 +21,10 @@ func NewBufferover() SubdomainFinderInterface {
 	return &Bufferover{
 		Url: constants.BufferoverUrl,
 	}
+}
+
+func (b Bufferover) IsPaidProvider() bool {
+	return false
 }
 
 func (b Bufferover) Enumeration(domain string) (map[string]struct{}, error) {

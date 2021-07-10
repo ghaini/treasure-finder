@@ -30,6 +30,10 @@ func NewUrlScan() SubdomainFinderInterface {
 	}
 }
 
+func (u UrlScan) IsPaidProvider() bool {
+	return false
+}
+
 func (u UrlScan) Enumeration(domain string) (map[string]struct{}, error) {
 	result := make(map[string]struct{})
 	fetchURL := fmt.Sprintf(u.Url+"/search/?q=domain:%s", domain)

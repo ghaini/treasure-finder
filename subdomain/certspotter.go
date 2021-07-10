@@ -12,6 +12,10 @@ type Certspotter struct {
 	Url string
 }
 
+func (c Certspotter) IsPaidProvider() bool {
+	return false
+}
+
 type certspotterResponse struct {
 	DNSNames []string `json:"dns_names"`
 }
