@@ -16,9 +16,14 @@ type ProgramFinder struct {
 }
 
 type Program struct {
-	Name             string   `json:"name"`
-	AssetsIdentifier []string `json:"assets_identifier"`
-	Bounty           bool     `json:"bounty"`
+	Name             string  `json:"name"`
+	InScopeAssets    []Asset `json:"in_scope_assets"`
+	OutOfScopeAssets []Asset `json:"out_of_scope_assets"`
+}
+
+type Asset struct {
+	Address string `json:"address"`
+	Bounty  bool   `json:"bounty"`
 }
 
 func NewProgramFinder() *ProgramFinder {
@@ -43,36 +48,56 @@ func (p *ProgramFinder) GetPrograms() ([]Program, error) {
 		}
 
 		for _, pr := range program {
-			var newAssetsIdentifier []string
-			for _, asset := range pr.AssetsIdentifier {
-				asset = strings.TrimSpace(asset)
-				asset = strings.ToLower(asset)
-				asset = strings.TrimLeft(asset, "https://")
-				asset = strings.TrimLeft(asset, "http://")
+			var newInScopeAssets []Asset
+			var newOutOfScopeAssets []Asset
+			for _, asset := range pr.InScopeAssets {
+				asset.Address = strings.TrimSpace(asset.Address)
+				asset.Address = strings.ToLower(asset.Address)
+				asset.Address = strings.TrimLeft(asset.Address, "https://")
+				asset.Address = strings.TrimLeft(asset.Address, "http://")
 
-				if !p.withIP && checkIsIP.MatchString(asset) {
+				if !p.withIP && checkIsIP.MatchString(asset.Address) {
 					continue
 				}
 
-				if p.onlyStar && !strings.HasPrefix(asset, "*") {
+				if p.onlyStar && !strings.HasPrefix(asset.Address, "*") {
 					continue
 				}
 
-				if strings.Count(asset, ".") > 4 {
+				if strings.Count(asset.Address, ".") > 4 {
 					continue
 				}
 
-				newAssetsIdentifier = append(newAssetsIdentifier, asset)
+				newInScopeAssets = append(newInScopeAssets, asset)
 			}
 
-			pr.AssetsIdentifier = newAssetsIdentifier
+			for _, asset := range pr.OutOfScopeAssets {
+				asset.Address = strings.TrimSpace(asset.Address)
+				asset.Address = strings.ToLower(asset.Address)
+				asset.Address = strings.TrimLeft(asset.Address, "https://")
+				asset.Address = strings.TrimLeft(asset.Address, "http://")
+
+				if !p.withIP && checkIsIP.MatchString(asset.Address) {
+					continue
+				}
+
+				if strings.Count(asset.Address, ".") > 4 {
+					continue
+				}
+
+				newOutOfScopeAssets = append(newOutOfScopeAssets, asset)
+			}
+
+			pr.InScopeAssets = newInScopeAssets
+			pr.OutOfScopeAssets = newOutOfScopeAssets
 			pr.Name = strings.ToLower(pr.Name)
 			pr.Name = strings.ReplaceAll(pr.Name, " ", "-")
-			if len(newAssetsIdentifier) > 0 {
+			if len(newInScopeAssets) > 0 {
 				programs = append(programs, pr)
 			}
 		}
 	}
+
 	return programs, nil
 }
 

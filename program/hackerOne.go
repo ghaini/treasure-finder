@@ -15,7 +15,8 @@ type HackerOneResponse struct {
 	Name    string `json:"name"`
 	Targets struct {
 		InScope []struct {
-			AssetIdentifier string `json:"asset_identifier"`
+			AssetIdentifier   string `json:"asset_identifier"`
+			EligibleForBounty bool   `json:"eligible_for_bounty"`
 		} `json:"in_scope"`
 	} `json:"targets"`
 }
@@ -45,14 +46,28 @@ func (h HackerOne) ProgramsList() ([]Program, error) {
 
 	var programs []Program
 	for _, hackerOneResponse := range hackerOneResponses {
-		var assetsIdentifier []string
+		var inScopeAssets []Asset
+		var outOfScopeAssets []Asset
 		for _, target := range hackerOneResponse.Targets.InScope {
-			assetsIdentifier = append(assetsIdentifier, target.AssetIdentifier)
+			asset := Asset{
+				Address: target.AssetIdentifier,
+				Bounty:  target.EligibleForBounty,
+			}
+			inScopeAssets = append(inScopeAssets, asset)
+		}
+
+		for _, target := range hackerOneResponse.Targets.InScope {
+			asset := Asset{
+				Address: target.AssetIdentifier,
+				Bounty:  target.EligibleForBounty,
+			}
+			outOfScopeAssets = append(outOfScopeAssets, asset)
 		}
 
 		programs = append(programs, Program{
 			Name:             hackerOneResponse.Name,
-			AssetsIdentifier: assetsIdentifier,
+			InScopeAssets:    inScopeAssets,
+			OutOfScopeAssets: outOfScopeAssets,
 		})
 	}
 
