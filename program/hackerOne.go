@@ -18,6 +18,10 @@ type HackerOneResponse struct {
 			AssetIdentifier   string `json:"asset_identifier"`
 			EligibleForBounty bool   `json:"eligible_for_bounty"`
 		} `json:"in_scope"`
+		OutOFScope []struct {
+			AssetIdentifier   string `json:"asset_identifier"`
+			EligibleForBounty bool   `json:"eligible_for_bounty"`
+		} `json:"out_of_scope,omitempty"`
 	} `json:"targets"`
 }
 
@@ -56,7 +60,7 @@ func (h HackerOne) ProgramsList() ([]Program, error) {
 			inScopeAssets = append(inScopeAssets, asset)
 		}
 
-		for _, target := range hackerOneResponse.Targets.InScope {
+		for _, target := range hackerOneResponse.Targets.OutOFScope {
 			asset := Asset{
 				Address: target.AssetIdentifier,
 				Bounty:  target.EligibleForBounty,
