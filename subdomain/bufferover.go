@@ -27,6 +27,14 @@ func (b Bufferover) IsPaidProvider() bool {
 	return false
 }
 
+func (b Bufferover) Name() string {
+	return "bufferover"
+}
+
+func (b Bufferover) SetAuth(token string) {
+	return
+}
+
 func (b Bufferover) Enumeration(domain string) (map[string]struct{}, error) {
 	result := make(map[string]struct{})
 	urlAddress := fmt.Sprintf(b.Url+"?q=.%s", domain)

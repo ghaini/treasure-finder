@@ -15,14 +15,22 @@ type HackerTarget struct {
 	Url string
 }
 
-func (h HackerTarget) IsPaidProvider() bool {
-	return false
-}
-
 func NewHackerTarget() SubdomainFinderInterface {
 	return &HackerTarget{
 		Url: constants.HackertargetUrl,
 	}
+}
+
+func (h HackerTarget) IsPaidProvider() bool {
+	return false
+}
+
+func (h HackerTarget) Name() string {
+	return "hackertarget"
+}
+
+func (h HackerTarget) SetAuth(token string) {
+	return
 }
 
 func (h HackerTarget) Enumeration(domain string) (map[string]struct{}, error) {

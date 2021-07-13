@@ -34,6 +34,14 @@ func (u UrlScan) IsPaidProvider() bool {
 	return false
 }
 
+func (u UrlScan) Name() string {
+	return "urlscan"
+}
+
+func (u UrlScan) SetAuth(token string) {
+	return
+}
+
 func (u UrlScan) Enumeration(domain string) (map[string]struct{}, error) {
 	result := make(map[string]struct{})
 	fetchURL := fmt.Sprintf(u.Url+"/search/?q=domain:%s", domain)

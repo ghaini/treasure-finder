@@ -12,10 +12,6 @@ type Certspotter struct {
 	Url string
 }
 
-func (c Certspotter) IsPaidProvider() bool {
-	return false
-}
-
 type certspotterResponse struct {
 	DNSNames []string `json:"dns_names"`
 }
@@ -25,6 +21,19 @@ func NewCertspotter() SubdomainFinderInterface {
 		Url: constants.CertspotterUrl,
 	}
 }
+
+func (c Certspotter) IsPaidProvider() bool {
+	return false
+}
+
+func (c Certspotter) SetAuth(token string) {
+	return
+}
+
+func (c Certspotter) Name() string {
+	return "certpotter"
+}
+
 
 func (c Certspotter) Enumeration(domain string) (map[string]struct{}, error) {
 	result := make(map[string]struct{})
