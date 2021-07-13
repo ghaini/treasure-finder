@@ -47,7 +47,7 @@ func (t Threatcrowd) Enumeration(domain string) (map[string]struct{}, error) {
 	dec := json.NewDecoder(resp.Body)
 	dec.Decode(&threatcrowdRes)
 	for _, subdomainAddress := range threatcrowdRes.Subdomains {
-		subdomain, err := url.Parse(subdomainAddress)
+		subdomain, err := url.Parse("https://" + subdomainAddress)
 		if err != nil {
 			continue
 		}

@@ -52,7 +52,7 @@ func (h HackerTarget) Enumeration(domain string) (map[string]struct{}, error) {
 		if len(address) != 2 {
 			continue
 		}
-		subdomain, err := url.Parse(address[0])
+		subdomain, err := url.Parse("http://" + address[0])
 		if err != nil {
 			continue
 		}

@@ -52,7 +52,7 @@ func (b Bufferover) Enumeration(domain string) (map[string]struct{}, error) {
 		if len(subdomainAddress) != 2 {
 			continue
 		}
-		subdomain, err := url.Parse(subdomainAddress[0])
+		subdomain, err := url.Parse("https://" + subdomainAddress[0])
 		if err != nil {
 			continue
 		}

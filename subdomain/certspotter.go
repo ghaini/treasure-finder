@@ -34,7 +34,6 @@ func (c Certspotter) Name() string {
 	return "certpotter"
 }
 
-
 func (c Certspotter) Enumeration(domain string) (map[string]struct{}, error) {
 	result := make(map[string]struct{})
 	urlAddress := fmt.Sprintf(c.Url+"/certs?domain=%s", domain)
@@ -49,7 +48,7 @@ func (c Certspotter) Enumeration(domain string) (map[string]struct{}, error) {
 	dec.Decode(&certspotterResp)
 	for _, csr := range certspotterResp {
 		for _, address := range csr.DNSNames {
-			subdomain, err := url.Parse(address)
+			subdomain, err := url.Parse("https://" + address)
 			if err != nil {
 				continue
 			}

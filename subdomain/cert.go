@@ -57,7 +57,7 @@ func (c Crt) Enumeration(domain string) (map[string]struct{}, error) {
 	for _, crt := range crtResponse {
 		names := strings.Fields(crt.Name)
 		for _, name := range names {
-			subdomain, err := url.Parse(name)
+			subdomain, err := url.Parse("https://" + name)
 			if err != nil {
 				continue
 			}

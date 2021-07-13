@@ -21,7 +21,7 @@ type SubdomainFinder struct {
 }
 
 type providerAuth struct {
-	tokens    []string `mapstructure:"tokens"`
+	Tokens []string `mapstructure:"tokens"`
 }
 
 func NewSubdomainFinder() *SubdomainFinder {
@@ -49,7 +49,7 @@ func (r *SubdomainFinder) Enumeration(domain string) ([]string, error) {
 	wg.Add(len(r.Finders))
 	subdomainsMapChan := make(chan map[string]struct{})
 	for _, finder := range r.Finders {
-		if r.tokensPath == "" && finder.IsPaidProvider()  {
+		if r.tokensPath == "" && finder.IsPaidProvider() {
 			continue
 		}
 
@@ -80,6 +80,10 @@ func (r *SubdomainFinder) Enumeration(domain string) ([]string, error) {
 			continue
 		}
 
+		if !strings.Contains(k, "*") {
+			continue
+		}
+
 		subdomains = append(subdomains, k)
 	}
 
@@ -90,9 +94,9 @@ func (r *SubdomainFinder) SetUsePaidProviders(baseTokensPath string) {
 	r.tokensPath = baseTokensPath
 }
 
-func (r *SubdomainFinder) initialPaidProviders(baseTokenPath string)  {
+func (r *SubdomainFinder) initialPaidProviders(baseTokenPath string) {
 	for _, finder := range r.Finders {
-		tokenPath := finder.Name() + ".toml"
+		tokenPath := baseTokenPath + "/" + finder.Name() + ".toml"
 		viperInstance := viper.New()
 		viperInstance.SetConfigFile(tokenPath)
 		err := viperInstance.ReadInConfig()
@@ -108,7 +112,7 @@ func (r *SubdomainFinder) initialPaidProviders(baseTokenPath string)  {
 			continue
 		}
 
-		token := auth.tokens[rand.Intn(len(auth.tokens) - 1)]
+		token := auth.Tokens[rand.Intn(len(auth.Tokens))]
 		finder.SetAuth(token)
 	}
 }

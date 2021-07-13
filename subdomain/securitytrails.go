@@ -48,10 +48,12 @@ func (s *Securitytrails) Enumeration(domain string) (map[string]struct{}, error)
 	err = dec.Decode(&securitytrailsRes)
 
 	for _, subdomainUrl := range securitytrailsRes.Subdomains {
-		subdomain, err := url.Parse(subdomainUrl)
+		address := "https://" + subdomainUrl + "." + domain
+		subdomain, err := url.Parse(address)
 		if err != nil {
 			continue
 		}
+		fmt.Println(subdomain.Hostname())
 		result[subdomain.Hostname()] = struct{}{}
 	}
 
