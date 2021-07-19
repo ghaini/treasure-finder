@@ -46,13 +46,13 @@ func (r *SubdomainFinder) Enumeration(domain string) ([]string, error) {
 
 	subdomainsUnionMap := make(map[string]struct{})
 	wg := &sync.WaitGroup{}
-	wg.Add(len(r.Finders))
 	subdomainsMapChan := make(chan map[string]struct{})
 	for _, finder := range r.Finders {
 		if r.tokensPath == "" && finder.IsPaidProvider() {
 			continue
 		}
 
+		wg.Add(1)
 		go func(finder SubdomainFinderInterface, wg *sync.WaitGroup) {
 			defer wg.Done()
 			subdomainsMap, err := finder.Enumeration(domain)
@@ -80,9 +80,11 @@ func (r *SubdomainFinder) Enumeration(domain string) ([]string, error) {
 			continue
 		}
 
-		if !strings.Contains(k, "*") {
-			continue
-		}
+		k = strings.ReplaceAll(k, "https://", "")
+		k = strings.ReplaceAll(k, "http://", "")
+		k = strings.ReplaceAll(k, "*", "")
+		k = strings.Trim(k, ".")
+		k = strings.Trim(k, "/")
 
 		subdomains = append(subdomains, k)
 	}
