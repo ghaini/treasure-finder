@@ -13,4 +13,5 @@ const (
 	HackertargetUrl   = "https://api.hackertarget.com"
 	ThreatcrowdUrl    = "https://www.threatcrowd.org/searchApi/v2"
 	SecuritytrailsUrl = "https://api.securitytrails.com/v1"
+	JLDCUrl           = "https://jldc.me/anubis/subdomains"
 )
