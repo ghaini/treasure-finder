@@ -12,10 +12,6 @@ type JLDC struct {
 	Url string
 }
 
-type JLDCRespose struct {
-	subdomains []string
-}
-
 func NewJLDC() SubdomainFinderInterface {
 	return JLDC{Url: constants.JLDCUrl}
 }
@@ -38,11 +34,11 @@ func (j JLDC) Enumeration(domain string) (map[string]struct{}, error) {
 		return result, err
 	}
 	defer resp.Body.Close()
-	dec := json.NewDecoder(resp.Body)
 
-	var jldcRes JLDCRespose
+	dec := json.NewDecoder(resp.Body)
+	var jldcRes []string
 	err = dec.Decode(&jldcRes)
-	for _, r := range jldcRes.subdomains {
+	for _, r := range jldcRes {
 		subdomain, err := url.Parse("https://" + r)
 		if err != nil {
 			continue
