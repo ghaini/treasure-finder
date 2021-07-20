@@ -7,6 +7,7 @@ const HackerOneFileUrl = "https://raw.githubusercontent.com/arkadiyt/bounty-targ
 const (
 	UrlScanUrl        = "https://urlscan.io/api/v1"
 	BufferoverUrl     = "https://dns.bufferover.run/dns"
+	TLSBufferoverUrl  = "https://tls.bufferover.run/dns"
 	CertUrl           = "https://crt.sh"
 	CertspotterUrl    = "https://certspotter.com/api/v0"
 	HackertargetUrl   = "https://api.hackertarget.com"

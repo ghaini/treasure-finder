@@ -34,6 +34,7 @@ func NewSubdomainFinder() *SubdomainFinder {
 			NewCertspotter(),
 			NewBufferover(),
 			NewSecuritytrails(),
+			NewTLSBufferover(),
 		},
 	}
 }
