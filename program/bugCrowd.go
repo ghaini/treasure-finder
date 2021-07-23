@@ -24,7 +24,7 @@ type BugCrowdResponse struct {
 }
 
 func NewBugCrowd() ProgramFinderInterface {
-	return BugCrowd{Url: constants.HackerOneFileUrl}
+	return BugCrowd{Url: constants.BugCrowdFileUrl}
 }
 
 func (b BugCrowd) ProgramsList() ([]Program, error) {

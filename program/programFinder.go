@@ -30,8 +30,8 @@ type Asset struct {
 func NewProgramFinder() *ProgramFinder {
 	return &ProgramFinder{
 		Finders: []ProgramFinderInterface{
-			NewHackerOne(),
 			NewBugCrowd(),
+			NewHackerOne(),
 		},
 	}
 }
@@ -40,6 +40,11 @@ func (p *ProgramFinder) GetPrograms() ([]Program, error) {
 	var programs []Program
 	programsMap := make( map[string]Program)
 	checkIsIP, err := regexp.Compile("^\\d+\\.\\d+")
+	if err != nil {
+		return nil, err
+	}
+
+	afterString, err := regexp.Compile("\\s.*")
 	if err != nil {
 		return nil, err
 	}
@@ -63,7 +68,7 @@ func (p *ProgramFinder) GetPrograms() ([]Program, error) {
 					continue
 				}
 
-				if p.onlyStar && !strings.HasPrefix(asset.Address, "*") {
+				if p.onlyStar && !strings.HasPrefix(asset.Address, "*.") {
 					continue
 				}
 
@@ -71,6 +76,8 @@ func (p *ProgramFinder) GetPrograms() ([]Program, error) {
 					continue
 				}
 
+				asset.Address = afterString.ReplaceAllString(asset.Address, "")
+				asset.Address = strings.Trim(asset.Address, "/")
 				newInScopeAssets = append(newInScopeAssets, asset)
 			}
 

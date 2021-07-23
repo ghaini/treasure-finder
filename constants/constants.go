@@ -2,7 +2,7 @@ package constants
 
 // program providers
 const HackerOneFileUrl = "https://raw.githubusercontent.com/arkadiyt/bounty-targets-data/master/data/hackerone_data.json"
-const BugCrowdFileUrl = "https://github.com/arkadiyt/bounty-targets-data/blob/master/data/bugcrowd_data.json"
+const BugCrowdFileUrl = "https://raw.githubusercontent.com/arkadiyt/bounty-targets-data/master/data/bugcrowd_data.json"
 
 // subdomain providers
 const (
