@@ -70,6 +70,7 @@ func (h HackerOne) ProgramsList() ([]Program, error) {
 
 		programs = append(programs, Program{
 			Name:             hackerOneResponse.Name,
+			Provider:         "hackerOne",
 			InScopeAssets:    inScopeAssets,
 			OutOfScopeAssets: outOfScopeAssets,
 		})

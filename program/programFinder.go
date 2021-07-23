@@ -17,6 +17,7 @@ type ProgramFinder struct {
 
 type Program struct {
 	Name             string  `json:"name"`
+	Provider         string  `json:"provider"`
 	InScopeAssets    []Asset `json:"in_scope_assets"`
 	OutOfScopeAssets []Asset `json:"out_of_scope_assets"`
 }
@@ -30,12 +31,14 @@ func NewProgramFinder() *ProgramFinder {
 	return &ProgramFinder{
 		Finders: []ProgramFinderInterface{
 			NewHackerOne(),
+			NewBugCrowd(),
 		},
 	}
 }
 
 func (p *ProgramFinder) GetPrograms() ([]Program, error) {
 	var programs []Program
+	programsMap := make( map[string]Program)
 	checkIsIP, err := regexp.Compile("^\\d+\\.\\d+")
 	if err != nil {
 		return nil, err
@@ -93,9 +96,13 @@ func (p *ProgramFinder) GetPrograms() ([]Program, error) {
 			pr.Name = strings.ToLower(pr.Name)
 			pr.Name = strings.ReplaceAll(pr.Name, " ", "-")
 			if len(newInScopeAssets) > 0 {
-				programs = append(programs, pr)
+				programsMap[pr.Name] = pr
 			}
 		}
+	}
+
+	for _, v := range programsMap{
+		programs = append(programs, v)
 	}
 
 	return programs, nil
