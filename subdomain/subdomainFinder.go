@@ -79,15 +79,17 @@ func (r *SubdomainFinder) Enumeration(domain string) ([]string, error) {
 
 	var subdomains []string
 	for k, _ := range subdomainsUnionMap {
-		if !strings.Contains(k, domain) {
-			continue
-		}
-
 		k = strings.ReplaceAll(k, "https://", "")
 		k = strings.ReplaceAll(k, "http://", "")
 		k = strings.ReplaceAll(k, "*", "")
 		k = strings.Trim(k, ".")
+		k = strings.Trim(k, ".")
 		k = strings.Trim(k, "/")
+		k = strings.TrimSpace(k)
+
+		if !strings.HasSuffix(k, domain) {
+			continue
+		}
 
 		subdomains = append(subdomains, k)
 	}
