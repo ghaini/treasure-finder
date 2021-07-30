@@ -83,7 +83,6 @@ func (r *SubdomainFinder) Enumeration(domain string) ([]string, error) {
 		k = strings.ReplaceAll(k, "http://", "")
 		k = strings.ReplaceAll(k, "*", "")
 		k = strings.Trim(k, ".")
-		k = strings.Trim(k, ".")
 		k = strings.Trim(k, "/")
 		k = strings.TrimSpace(k)
 

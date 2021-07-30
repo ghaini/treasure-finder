@@ -53,7 +53,6 @@ func (s *Securitytrails) Enumeration(domain string) (map[string]struct{}, error)
 		if err != nil {
 			continue
 		}
-		fmt.Println(subdomain.Hostname())
 		result[subdomain.Hostname()] = struct{}{}
 	}
 
