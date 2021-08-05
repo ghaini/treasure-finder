@@ -85,8 +85,7 @@ func (r *SubdomainFinder) Enumeration(domain string) ([]string, error) {
 		k = strings.Trim(k, ".")
 		k = strings.Trim(k, "/")
 		k = strings.TrimSpace(k)
-
-		if !strings.HasSuffix(k, domain) ||
+		if !strings.Contains(k, "." + domain) ||
 			strings.Contains(k, "www.google.com") ||
 			strings.Contains(k, "webproxy") ||
 			strings.HasPrefix(k, "bvr") ||
@@ -108,6 +107,10 @@ func (r *SubdomainFinder) SetUsePaidProviders(baseTokensPath string) {
 
 func (r *SubdomainFinder) initialPaidProviders(baseTokenPath string) {
 	for _, finder := range r.Finders {
+		if !finder.IsPaidProvider() {
+			continue
+		}
+
 		tokenPath := baseTokenPath + "/" + finder.Name() + ".toml"
 		viperInstance := viper.New()
 		viperInstance.SetConfigFile(tokenPath)
