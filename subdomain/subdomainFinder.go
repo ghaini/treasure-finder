@@ -91,13 +91,12 @@ func (r *SubdomainFinder) Enumeration(domain string) ([]string, error) {
 			strings.HasPrefix(k, "bvr") ||
 			len(k) > 15 {
 			continue
-		} else {
-			log.Println(k, domain)
 		}
 
 		subdomains = append(subdomains, k)
 	}
 
+	subdomains = append(subdomains, domain)
 	return subdomains, nil
 }
 
