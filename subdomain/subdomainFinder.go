@@ -87,6 +87,7 @@ func (r *SubdomainFinder) Enumeration(domain string) ([]string, error) {
 		k = strings.TrimSpace(k)
 		if !strings.HasSuffix(k, "." + domain) ||
 			strings.Contains(k, "www.google.com") ||
+			strings.Contains(k, "cloudflare.net") ||
 			strings.Contains(k, "webproxy") ||
 			strings.HasPrefix(k, "bvr") ||
 			len(k) > (50 + len(domain)) {
