@@ -13,7 +13,7 @@ type Omnisint struct {
 }
 
 func NewOmnisint() SubdomainFinderInterface {
-	return &Threatcrowd{
+	return &Omnisint{
 		Url: constants.OmnisintUrl,
 	}
 }
