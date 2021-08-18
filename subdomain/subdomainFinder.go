@@ -38,6 +38,7 @@ func NewSubdomainFinder() *SubdomainFinder {
 			NewJLDC(),
 			NewAlienvault(),
 			NewOmnisint(),
+			NewRapiddns(),
 		},
 	}
 }
