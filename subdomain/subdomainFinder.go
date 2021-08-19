@@ -24,12 +24,12 @@ type SubdomainFinder struct {
 }
 
 type providerAuth struct {
-	Tokens []providerAuthDetail `mapstructure:"tokens"`
+	Tokens []providerAuthDetail `mapstructure:"Tokens"`
 }
 
 type providerAuthDetail struct {
-	Token       string `mapstructure:"token"`
-	IsAvailable bool   `mapstructure:"is_available"`
+	Token       string `mapstructure:"Token"`
+	IsAvailable bool   `mapstructure:"IsAvailable"`
 }
 
 func NewSubdomainFinder() *SubdomainFinder {
@@ -61,7 +61,7 @@ func (r *SubdomainFinder) Enumeration(domain string) ([]string, error) {
 	wg := &sync.WaitGroup{}
 	subdomainsMapChan := make(chan map[string]struct{})
 	for _, finder := range r.Finders {
-		if r.tokensPath == "" && finder.IsPaidProvider() {
+		if finder.IsPaidProvider() && (r.tokensPath == "" || finder.GetAuth() == "")  {
 			continue
 		}
 
@@ -71,7 +71,9 @@ func (r *SubdomainFinder) Enumeration(domain string) ([]string, error) {
 			subdomainsMap, statusCode, err := finder.Enumeration(domain)
 			if finder.IsPaidProvider() && (statusCode == 401 || statusCode == 403) {
 				changeErr := r.changeTokenToUnavailable(finder.GetAuth(), finder.Name())
-				log.Println(changeErr)
+				if changeErr != nil {
+					log.Println(changeErr)
+				}
 			}
 
 			if err != nil {
