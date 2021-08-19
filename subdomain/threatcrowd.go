@@ -37,6 +37,7 @@ func (t Threatcrowd) SetAuth(token string) {
 func (t Threatcrowd) GetAuth() string {return ""}
 
 func (t Threatcrowd) Enumeration(domain string) (result map[string]struct{}, statusCode int, err error) {
+	result = make(map[string]struct{})
 	urlAddress := fmt.Sprintf(t.Url+"/domain/report/?domain=%s", domain)
 	resp, err := http.Get(urlAddress)
 	if err != nil {

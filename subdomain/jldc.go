@@ -29,6 +29,7 @@ func (j JLDC) Name() string {
 }
 
 func (j JLDC) Enumeration(domain string) (result map[string]struct{}, statusCode int, err error) {
+	result = make(map[string]struct{})
 	fetchURL := fmt.Sprintf(j.Url+"/%s", domain)
 	resp, err := http.Get(fetchURL)
 	if err != nil {

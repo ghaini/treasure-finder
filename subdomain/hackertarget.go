@@ -36,6 +36,7 @@ func (h HackerTarget) SetAuth(token string) {
 func (h HackerTarget) GetAuth() string {return ""}
 
 func (h HackerTarget) Enumeration(domain string) (result map[string]struct{}, statusCode int, err error) {
+	result = make(map[string]struct{})
 	urlAddress := fmt.Sprintf(h.Url+"/hostsearch/?q=%s", domain)
 	res, err := http.Get(urlAddress)
 	if err != nil {

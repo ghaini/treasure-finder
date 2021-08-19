@@ -38,6 +38,7 @@ func (b Bufferover) SetAuth(token string) {
 func (b Bufferover) GetAuth() string {return ""}
 
 func (b Bufferover) Enumeration(domain string) (result map[string]struct{}, statusCode int, err error) {
+	result = make(map[string]struct{})
 	urlAddress := fmt.Sprintf(b.Url+"?q=.%s", domain)
 	resp, err := http.Get(urlAddress)
 	if err != nil {

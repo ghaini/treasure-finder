@@ -35,6 +35,7 @@ func (r Rapiddns) SetAuth(token string) {
 func (r Rapiddns) GetAuth() string {return ""}
 
 func (r Rapiddns) Enumeration(domain string) (result map[string]struct{}, statusCode int, err error) {
+	result = make(map[string]struct{})
 	urlAddress := fmt.Sprintf(r.Url+"%s?full=1#result", domain)
 	resp, err := http.Get(urlAddress)
 	if err != nil {

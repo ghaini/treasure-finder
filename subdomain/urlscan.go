@@ -45,6 +45,7 @@ func (u UrlScan) SetAuth(token string) {
 func (u UrlScan) GetAuth() string { return "" }
 
 func (u UrlScan) Enumeration(domain string) (result map[string]struct{}, statusCode int, err error) {
+	result = make(map[string]struct{})
 	fetchURL := fmt.Sprintf(u.Url+"/search/?q=domain:%s", domain)
 	resp, err := http.Get(fetchURL)
 	if err != nil {

@@ -35,6 +35,7 @@ func (a Alienvault) Name() string {
 }
 
 func (a Alienvault) Enumeration(domain string) (result map[string]struct{}, statusCode int, err error) {
+	result = make(map[string]struct{})
 	fetchURL := fmt.Sprintf(a.Url+"/%s/passive_dns", domain)
 	resp, err := http.Get(fetchURL)
 	if err != nil {

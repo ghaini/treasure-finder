@@ -39,6 +39,7 @@ func (c Crt) SetAuth(token string) {
 func (c Crt) GetAuth() string {return ""}
 
 func (c Crt) Enumeration(domain string) (result map[string]struct{}, statusCode int, err error){
+	result = make(map[string]struct{})
 	urlAddress := fmt.Sprintf(c.Url+"?q=%%25.%s&output=json", domain)
 	resp, err := http.Get(urlAddress)
 	if err != nil {

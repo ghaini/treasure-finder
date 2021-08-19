@@ -33,6 +33,7 @@ func (o Omnisint) SetAuth(token string) {
 func (o Omnisint) GetAuth() string {return ""}
 
 func (o Omnisint) Enumeration(domain string) (result map[string]struct{}, statusCode int, err error) {
+	result = make(map[string]struct{})
 	urlAddress := fmt.Sprintf(o.Url+"%s", domain)
 	resp, err := http.Get(urlAddress)
 	if err != nil {
