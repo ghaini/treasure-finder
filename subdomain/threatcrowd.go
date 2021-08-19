@@ -34,18 +34,22 @@ func (t Threatcrowd) SetAuth(token string) {
 	return
 }
 
-func (t Threatcrowd) Enumeration(domain string) (map[string]struct{}, error) {
-	result := make(map[string]struct{})
+func (t Threatcrowd) GetAuth() string {return ""}
+
+func (t Threatcrowd) Enumeration(domain string) (result map[string]struct{}, statusCode int, err error) {
 	urlAddress := fmt.Sprintf(t.Url+"/domain/report/?domain=%s", domain)
 	resp, err := http.Get(urlAddress)
 	if err != nil {
-		return result, err
+		return result, 500, err
 	}
 	defer resp.Body.Close()
 
 	var threatcrowdRes threatcrowdResponse
 	dec := json.NewDecoder(resp.Body)
-	dec.Decode(&threatcrowdRes)
+	err = dec.Decode(&threatcrowdRes)
+	if err != nil {
+		return result, resp.StatusCode, err
+	}
 	for _, subdomainAddress := range threatcrowdRes.Subdomains {
 		subdomain, err := url.Parse("https://" + subdomainAddress)
 		if err != nil {
@@ -54,5 +58,5 @@ func (t Threatcrowd) Enumeration(domain string) (map[string]struct{}, error) {
 		result[subdomain.Hostname()] = struct{}{}
 	}
 
-	return result, nil
+	return result, resp.StatusCode, nil
 }

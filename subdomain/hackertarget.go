@@ -33,16 +33,17 @@ func (h HackerTarget) SetAuth(token string) {
 	return
 }
 
-func (h HackerTarget) Enumeration(domain string) (map[string]struct{}, error) {
-	result := make(map[string]struct{})
+func (h HackerTarget) GetAuth() string {return ""}
+
+func (h HackerTarget) Enumeration(domain string) (result map[string]struct{}, statusCode int, err error) {
 	urlAddress := fmt.Sprintf(h.Url+"/hostsearch/?q=%s", domain)
 	res, err := http.Get(urlAddress)
 	if err != nil {
-		return result, err
+		return result, 500, err
 	}
 	raw, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		return result, err
+		return result, res.StatusCode, err
 	}
 	res.Body.Close()
 
@@ -59,6 +60,6 @@ func (h HackerTarget) Enumeration(domain string) (map[string]struct{}, error) {
 		result[subdomain.Hostname()] = struct{}{}
 	}
 
-	return result, nil
+	return result, res.StatusCode, nil
 
 }

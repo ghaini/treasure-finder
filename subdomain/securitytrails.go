@@ -30,22 +30,26 @@ func (s *Securitytrails) SetAuth(token string) {
 	s.token = token
 }
 
+func (s *Securitytrails) GetAuth() string { return s.token }
+
 func (s *Securitytrails) Name() string {
 	return "securitytrails"
 }
 
-func (s *Securitytrails) Enumeration(domain string) (map[string]struct{}, error) {
-	result := make(map[string]struct{})
+func (s *Securitytrails) Enumeration(domain string) (result map[string]struct{}, statusCode int, err error) {
 	urlAddress := fmt.Sprintf(s.Url+"/domain/%s/subdomains?apikey=%s", domain, s.token)
 	resp, err := http.Get(urlAddress)
 	if err != nil {
-		return result, err
+		return result, 500, err
 	}
 	defer resp.Body.Close()
 
 	var securitytrailsRes SecuritytrailsResponse
 	dec := json.NewDecoder(resp.Body)
 	err = dec.Decode(&securitytrailsRes)
+	if err != nil {
+		return result, resp.StatusCode, err
+	}
 
 	for _, subdomainUrl := range securitytrailsRes.Subdomains {
 		address := "https://" + subdomainUrl + "." + domain
@@ -56,5 +60,5 @@ func (s *Securitytrails) Enumeration(domain string) (map[string]struct{}, error)
 		result[subdomain.Hostname()] = struct{}{}
 	}
 
-	return result, nil
+	return result, resp.StatusCode, nil
 }

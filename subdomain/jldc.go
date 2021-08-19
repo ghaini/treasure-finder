@@ -22,16 +22,17 @@ func (j JLDC) IsPaidProvider() bool {
 
 func (j JLDC) SetAuth(token string) {}
 
+func (j JLDC) GetAuth() string {return ""}
+
 func (j JLDC) Name() string {
 	return "jldc"
 }
 
-func (j JLDC) Enumeration(domain string) (map[string]struct{}, error) {
-	result := make(map[string]struct{})
+func (j JLDC) Enumeration(domain string) (result map[string]struct{}, statusCode int, err error) {
 	fetchURL := fmt.Sprintf(j.Url+"/%s", domain)
 	resp, err := http.Get(fetchURL)
 	if err != nil {
-		return result, err
+		return result, 500, err
 	}
 	defer resp.Body.Close()
 
@@ -46,5 +47,5 @@ func (j JLDC) Enumeration(domain string) (map[string]struct{}, error) {
 		result[subdomain.Hostname()] = struct{}{}
 	}
 
-	return result, nil
+	return result, resp.StatusCode, nil
 }

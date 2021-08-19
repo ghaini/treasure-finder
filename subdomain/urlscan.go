@@ -42,18 +42,23 @@ func (u UrlScan) SetAuth(token string) {
 	return
 }
 
-func (u UrlScan) Enumeration(domain string) (map[string]struct{}, error) {
-	result := make(map[string]struct{})
+func (u UrlScan) GetAuth() string { return "" }
+
+func (u UrlScan) Enumeration(domain string) (result map[string]struct{}, statusCode int, err error) {
 	fetchURL := fmt.Sprintf(u.Url+"/search/?q=domain:%s", domain)
 	resp, err := http.Get(fetchURL)
 	if err != nil {
-		return result, err
+		return result, 500, err
 	}
 	defer resp.Body.Close()
 	dec := json.NewDecoder(resp.Body)
 
 	var urlScanResponse urlScanResponse
 	err = dec.Decode(&urlScanResponse)
+	if err != nil {
+		return result, resp.StatusCode, err
+	}
+
 	for _, r := range urlScanResponse.Results {
 		subdomain, err := url.Parse(r.Task.URL)
 		if err != nil {
@@ -62,5 +67,5 @@ func (u UrlScan) Enumeration(domain string) (map[string]struct{}, error) {
 		result[subdomain.Hostname()] = struct{}{}
 	}
 
-	return result, nil
+	return result, resp.StatusCode, nil
 }

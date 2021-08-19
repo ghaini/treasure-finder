@@ -30,18 +30,22 @@ func (o Omnisint) SetAuth(token string) {
 	return
 }
 
-func (o Omnisint) Enumeration(domain string) (map[string]struct{}, error) {
-	result := make(map[string]struct{})
+func (o Omnisint) GetAuth() string {return ""}
+
+func (o Omnisint) Enumeration(domain string) (result map[string]struct{}, statusCode int, err error) {
 	urlAddress := fmt.Sprintf(o.Url+"%s", domain)
 	resp, err := http.Get(urlAddress)
 	if err != nil {
-		return result, err
+		return result, 500, err
 	}
 	defer resp.Body.Close()
 
 	var subdomains []string
 	dec := json.NewDecoder(resp.Body)
-	dec.Decode(&subdomains)
+	err = dec.Decode(&subdomains)
+	if err != nil {
+		return result, resp.StatusCode, err
+	}
 	for _, subdomainAddress := range subdomains {
 		subdomain, err := url.Parse("https://" + subdomainAddress)
 		if err != nil {
@@ -50,5 +54,5 @@ func (o Omnisint) Enumeration(domain string) (map[string]struct{}, error) {
 		result[subdomain.Hostname()] = struct{}{}
 	}
 
-	return result, nil
+	return result, resp.StatusCode, nil
 }

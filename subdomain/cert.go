@@ -36,23 +36,24 @@ func (c Crt) SetAuth(token string) {
 	return
 }
 
-func (c Crt) Enumeration(domain string) (map[string]struct{}, error) {
-	result := make(map[string]struct{})
+func (c Crt) GetAuth() string {return ""}
+
+func (c Crt) Enumeration(domain string) (result map[string]struct{}, statusCode int, err error){
 	urlAddress := fmt.Sprintf(c.Url+"?q=%%25.%s&output=json", domain)
 	resp, err := http.Get(urlAddress)
 	if err != nil {
-		return result, err
+		return result, 500, err
 	}
 	defer resp.Body.Close()
 
 	var crtResponse []crtResponse
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return result, err
+		return result, resp.StatusCode, err
 	}
 
-	if err := json.Unmarshal(body, &crtResponse); err != nil {
-		return result, err
+	if err = json.Unmarshal(body, &crtResponse); err != nil {
+		return result, resp.StatusCode, err
 	}
 	for _, crt := range crtResponse {
 		names := strings.Fields(crt.Name)
@@ -65,5 +66,5 @@ func (c Crt) Enumeration(domain string) (map[string]struct{}, error) {
 		}
 	}
 
-	return result, err
+	return result, resp.StatusCode, err
 }

@@ -24,7 +24,7 @@ func (r Rapiddns) IsPaidProvider() bool {
 	return false
 }
 
-func (r	Rapiddns) Name() string {
+func (r Rapiddns) Name() string {
 	return "rapiddns"
 }
 
@@ -32,19 +32,19 @@ func (r Rapiddns) SetAuth(token string) {
 	return
 }
 
-func (r Rapiddns) Enumeration(domain string) (map[string]struct{}, error) {
-	result := make(map[string]struct{})
+func (r Rapiddns) GetAuth() string {return ""}
+
+func (r Rapiddns) Enumeration(domain string) (result map[string]struct{}, statusCode int, err error) {
 	urlAddress := fmt.Sprintf(r.Url+"%s?full=1#result", domain)
 	resp, err := http.Get(urlAddress)
 	if err != nil {
-		return result, err
+		return result, 500, err
 	}
 	defer resp.Body.Close()
 
-
 	doc, err := goquery.NewDocumentFromReader(resp.Body)
 	if err != nil {
-		return result, err
+		return result, resp.StatusCode, err
 	}
 
 	doc.Find(".table td").Each(func(i int, s *goquery.Selection) {
@@ -59,5 +59,5 @@ func (r Rapiddns) Enumeration(domain string) (map[string]struct{}, error) {
 		}
 	})
 
-	return result, nil
+	return result, resp.StatusCode, nil
 }
