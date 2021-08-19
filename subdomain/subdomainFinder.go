@@ -152,6 +152,7 @@ func (r *SubdomainFinder) initialPaidProviders(baseTokenPath string) {
 		for _, token := range authProvider.Tokens {
 			if token.IsAvailable {
 				finder.SetAuth(token.Token)
+				break
 			}
 		}
 	}
