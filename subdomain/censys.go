@@ -55,14 +55,18 @@ func (c Censys) SetAuth(token string) {
 	return
 }
 
-func (c Censys) Enumeration(domain string) (map[string]struct{}, error) {
+func (c Censys) GetAuth() string {
+	return c.ApiKey
+}
+
+func (c Censys) Enumeration(domain string) (map[string]struct{}, int, error) {
 	resultMap := make(map[string]struct{})
 	page := 1
 	maxPage := 1
 	for {
-		censysResponse, err := c.censysRequest(domain, page)
+		censysResponse, statusCode, err := c.censysRequest(domain, page)
 		if err != nil {
-			return nil, err
+			return nil, statusCode, err
 		}
 		maxPage = censysResponse.Metadata.Pages
 		for _, result := range censysResponse.Results {
@@ -81,10 +85,10 @@ func (c Censys) Enumeration(domain string) (map[string]struct{}, error) {
 		page++
 	}
 
-	return resultMap, nil
+	return resultMap, 200, nil
 }
 
-func (c Censys) censysRequest(domain string, page int) (*censysResponse, error) {
+func (c Censys) censysRequest(domain string, page int) (*censysResponse, int, error) {
 	req := censysRequest{
 		Query:  domain,
 		Fields: []string{"parsed.names"},
@@ -93,18 +97,18 @@ func (c Censys) censysRequest(domain string, page int) (*censysResponse, error) 
 
 	reqJson, err := json.Marshal(req)
 	if err != nil {
-		return nil, err
+		return nil, 500, err
 	}
 
 	client := &http.Client{}
 	httpReq, err := http.NewRequest("POST", constants.CensysUrl, bytes.NewBuffer(reqJson))
 	if err != nil {
-		return nil, err
+		return nil, 500, err
 	}
 	httpReq.Header.Set("Authorization", base64.StdEncoding.EncodeToString([]byte(c.ApiKey)))
 	resp, err := client.Do(httpReq)
 	if err != nil {
-		return nil, err
+		return nil, 500, err
 	}
 
 	defer resp.Body.Close()
@@ -112,13 +116,13 @@ func (c Censys) censysRequest(domain string, page int) (*censysResponse, error) 
 	var censysResponse *censysResponse
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return nil, err
+		return nil, resp.StatusCode, err
 	}
 
 	err = json.Unmarshal(body, &censysResponse)
 	if err != nil {
-		return nil, err
+		return nil, resp.StatusCode, err
 	}
 
-	return censysResponse, nil
+	return censysResponse, resp.StatusCode, nil
 }
