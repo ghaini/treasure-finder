@@ -37,6 +37,7 @@ func NewSubdomainFinder() *SubdomainFinder {
 			NewTLSBufferover(),
 			NewJLDC(),
 			NewAlienvault(),
+			NewCensys(),
 		},
 	}
 }

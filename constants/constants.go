@@ -16,4 +16,5 @@ const (
 	SecuritytrailsUrl = "https://api.securitytrails.com/v1"
 	JLDCUrl           = "https://jldc.me/anubis/subdomains"
 	AlienvaultUrl     = "https://otx.alienvault.com/api/v1/indicators/domain/"
+	CensysUrl         = "https://censys.io/api/v1/search/certificates"
 )
