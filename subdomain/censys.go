@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
 	"github.com/ghaini/treasure-finder/constants"
 	"io/ioutil"
 	"net/http"
@@ -42,24 +43,24 @@ func NewCensys() SubdomainFinderInterface {
 	}
 }
 
-func (c Censys) IsPaidProvider() bool {
+func (c *Censys) IsPaidProvider() bool {
 	return true
 }
 
-func (c Censys) Name() string {
+func (c *Censys) Name() string {
 	return "censys"
 }
 
-func (c Censys) SetAuth(token string) {
+func (c *Censys) SetAuth(token string) {
 	c.ApiKey = token
 	return
 }
 
-func (c Censys) GetAuth() string {
+func (c *Censys) GetAuth() string {
 	return c.ApiKey
 }
 
-func (c Censys) Enumeration(domain string) (map[string]struct{}, int, error) {
+func (c *Censys) Enumeration(domain string) (map[string]struct{}, int, error) {
 	resultMap := make(map[string]struct{})
 	page := 1
 	maxPage := 1
@@ -79,7 +80,7 @@ func (c Censys) Enumeration(domain string) (map[string]struct{}, int, error) {
 			}
 		}
 
-		if maxPage == page {
+		if maxPage <= page {
 			break
 		}
 		page++
@@ -88,7 +89,7 @@ func (c Censys) Enumeration(domain string) (map[string]struct{}, int, error) {
 	return resultMap, 200, nil
 }
 
-func (c Censys) censysRequest(domain string, page int) (*censysResponse, int, error) {
+func (c *Censys) censysRequest(domain string, page int) (*censysResponse, int, error) {
 	req := censysRequest{
 		Query:  domain,
 		Fields: []string{"parsed.names"},
@@ -105,10 +106,15 @@ func (c Censys) censysRequest(domain string, page int) (*censysResponse, int, er
 	if err != nil {
 		return nil, 500, err
 	}
-	httpReq.Header.Set("Authorization", base64.StdEncoding.EncodeToString([]byte(c.ApiKey)))
+
+	httpReq.Header.Set("Authorization", "basic "+base64.StdEncoding.EncodeToString([]byte(c.ApiKey)))
 	resp, err := client.Do(httpReq)
 	if err != nil {
 		return nil, 500, err
+	}
+
+	if resp.StatusCode != 200 {
+		return nil, resp.StatusCode, fmt.Errorf("error!")
 	}
 
 	defer resp.Body.Close()
