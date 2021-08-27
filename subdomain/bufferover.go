@@ -35,12 +35,14 @@ func (b Bufferover) SetAuth(token string) {
 	return
 }
 
-func (b Bufferover) Enumeration(domain string) (map[string]struct{}, error) {
-	result := make(map[string]struct{})
+func (b Bufferover) GetAuth() string {return ""}
+
+func (b Bufferover) Enumeration(domain string) (result map[string]struct{}, statusCode int, err error) {
+	result = make(map[string]struct{})
 	urlAddress := fmt.Sprintf(b.Url+"?q=.%s", domain)
 	resp, err := http.Get(urlAddress)
 	if err != nil {
-		return result, err
+		return result, 500, err
 	}
 	defer resp.Body.Close()
 
@@ -59,5 +61,5 @@ func (b Bufferover) Enumeration(domain string) (map[string]struct{}, error) {
 		result[subdomain.Hostname()] = struct{}{}
 	}
 
-	return result, nil
+	return result, resp.StatusCode, nil
 }

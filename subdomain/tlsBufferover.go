@@ -35,18 +35,24 @@ func (b TLSBufferover) SetAuth(token string) {
 	return
 }
 
-func (b TLSBufferover) Enumeration(domain string) (map[string]struct{}, error) {
-	result := make(map[string]struct{})
+func (b TLSBufferover) GetAuth() string {return ""}
+
+func (b TLSBufferover) Enumeration(domain string) (result map[string]struct{}, statusCode int, err error) {
+	result = make(map[string]struct{})
 	urlAddress := fmt.Sprintf(b.Url+"?q=%s", domain)
 	resp, err := http.Get(urlAddress)
 	if err != nil {
-		return result, err
+		return result, 500,err
 	}
 	defer resp.Body.Close()
 
 	var bufferoverRes bufferoverResponse
 	dec := json.NewDecoder(resp.Body)
-	dec.Decode(&bufferoverRes)
+	err = dec.Decode(&bufferoverRes)
+	if err != nil {
+		return result, resp.StatusCode, err
+	}
+
 	for _, record := range bufferoverRes.Records {
 		subdomainAddress := strings.SplitN(record, ",", 2)
 		if len(subdomainAddress) != 2 {
@@ -59,5 +65,5 @@ func (b TLSBufferover) Enumeration(domain string) (map[string]struct{}, error) {
 		result[subdomain.Hostname()] = struct{}{}
 	}
 
-	return result, nil
+	return result, resp.StatusCode, nil
 }

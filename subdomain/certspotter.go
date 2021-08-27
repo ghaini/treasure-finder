@@ -30,22 +30,28 @@ func (c Certspotter) SetAuth(token string) {
 	return
 }
 
+func (c Certspotter) GetAuth() string {return ""}
+
 func (c Certspotter) Name() string {
 	return "certpotter"
 }
 
-func (c Certspotter) Enumeration(domain string) (map[string]struct{}, error) {
-	result := make(map[string]struct{})
+func (c Certspotter) Enumeration(domain string) (result map[string]struct{}, statusCode int, err error) {
+	result = make(map[string]struct{})
 	urlAddress := fmt.Sprintf(c.Url+"/certs?domain=%s", domain)
 	resp, err := http.Get(urlAddress)
 	if err != nil {
-		return result, err
+		return result, 500, err
 	}
 	defer resp.Body.Close()
 
 	var certspotterResp []certspotterResponse
 	dec := json.NewDecoder(resp.Body)
-	dec.Decode(&certspotterResp)
+	err = dec.Decode(&certspotterResp)
+	if err != nil {
+		return result, resp.StatusCode, err
+	}
+
 	for _, csr := range certspotterResp {
 		for _, address := range csr.DNSNames {
 			subdomain, err := url.Parse("https://" + address)
@@ -56,5 +62,5 @@ func (c Certspotter) Enumeration(domain string) (map[string]struct{}, error) {
 		}
 	}
 
-	return result, nil
+	return result, resp.StatusCode,nil
 }

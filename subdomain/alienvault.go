@@ -28,16 +28,18 @@ func (a Alienvault) IsPaidProvider() bool {
 
 func (a Alienvault) SetAuth(token string) {}
 
+func (a Alienvault) GetAuth() string {return ""}
+
 func (a Alienvault) Name() string {
 	return "alienvault"
 }
 
-func (a Alienvault) Enumeration(domain string) (map[string]struct{}, error) {
-	result := make(map[string]struct{})
+func (a Alienvault) Enumeration(domain string) (result map[string]struct{}, statusCode int, err error) {
+	result = make(map[string]struct{})
 	fetchURL := fmt.Sprintf(a.Url+"/%s/passive_dns", domain)
 	resp, err := http.Get(fetchURL)
 	if err != nil {
-		return result, err
+		return result, 500, err
 	}
 
 	defer resp.Body.Close()
@@ -52,5 +54,5 @@ func (a Alienvault) Enumeration(domain string) (map[string]struct{}, error) {
 		result[subdomain.Hostname()] = struct{}{}
 	}
 
-	return result, nil
+	return result, resp.StatusCode,nil
 }
