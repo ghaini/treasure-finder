@@ -38,7 +38,7 @@ func NewProgramFinder() *ProgramFinder {
 
 func (p *ProgramFinder) GetPrograms() ([]Program, error) {
 	var programs []Program
-	programsMap := make( map[string]Program)
+	programsMap := make(map[string]Program)
 	checkIsIP, err := regexp.Compile("^\\d+\\.\\d+")
 	if err != nil {
 		return nil, err
@@ -61,8 +61,8 @@ func (p *ProgramFinder) GetPrograms() ([]Program, error) {
 			for _, asset := range pr.InScopeAssets {
 				asset.Address = strings.TrimSpace(asset.Address)
 				asset.Address = strings.ToLower(asset.Address)
-				asset.Address = strings.TrimLeft(asset.Address, "https://")
-				asset.Address = strings.TrimLeft(asset.Address, "http://")
+				asset.Address = strings.ReplaceAll(asset.Address, "https://", "")
+				asset.Address = strings.ReplaceAll(asset.Address, "http://", "")
 
 				if !p.withIP && checkIsIP.MatchString(asset.Address) {
 					continue
@@ -84,8 +84,8 @@ func (p *ProgramFinder) GetPrograms() ([]Program, error) {
 			for _, asset := range pr.OutOfScopeAssets {
 				asset.Address = strings.TrimSpace(asset.Address)
 				asset.Address = strings.ToLower(asset.Address)
-				asset.Address = strings.TrimLeft(asset.Address, "https://")
-				asset.Address = strings.TrimLeft(asset.Address, "http://")
+				asset.Address = strings.ReplaceAll(asset.Address, "https://", "")
+				asset.Address = strings.ReplaceAll(asset.Address, "http://", "")
 
 				if !p.withIP && checkIsIP.MatchString(asset.Address) {
 					continue
@@ -108,7 +108,7 @@ func (p *ProgramFinder) GetPrograms() ([]Program, error) {
 		}
 	}
 
-	for _, v := range programsMap{
+	for _, v := range programsMap {
 		programs = append(programs, v)
 	}
 
