@@ -108,7 +108,8 @@ func (r *SubdomainFinder) Enumeration(domain string) ([]string, error) {
 			strings.Contains(k, "cloudflare.net") ||
 			strings.Contains(k, "webproxy") ||
 			strings.HasPrefix(k, "bvr") ||
-			len(k) > (50+len(domain)) {
+			len(k) > (50+len(domain)) ||
+			strings.Count(k, "-") > 3 {
 			continue
 		}
 
