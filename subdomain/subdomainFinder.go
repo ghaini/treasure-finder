@@ -8,6 +8,7 @@ import (
 	"os"
 	"strings"
 	"sync"
+	"time"
 )
 
 type SubdomainFinderInterface interface {
@@ -29,7 +30,7 @@ type providerAuth struct {
 
 type providerAuthDetail struct {
 	Token       string `mapstructure:"Token"`
-	IsAvailable bool   `mapstructure:"IsAvailable"`
+	LockUntil int64   `mapstructure:"LockUntil"`
 }
 
 func NewSubdomainFinder() *SubdomainFinder {
@@ -152,7 +153,7 @@ func (r *SubdomainFinder) initialPaidProviders(baseTokenPath string) {
 		}
 
 		for _, token := range authProvider.Tokens {
-			if token.IsAvailable {
+			if token.LockUntil < time.Now().UTC().Unix() {
 				finder.SetAuth(token.Token)
 				break
 			}
@@ -182,7 +183,7 @@ func (r *SubdomainFinder) changeTokenToUnavailable(token, provider string) error
 				return err
 			}
 
-			authProvider.Tokens[i].IsAvailable = false
+			authProvider.Tokens[i].LockUntil = time.Now().UTC().Add(1 * 31 *24* time.Hour).Unix()
 			if err = toml.NewEncoder(f).Encode(authProvider); err != nil {
 				return err
 			}
