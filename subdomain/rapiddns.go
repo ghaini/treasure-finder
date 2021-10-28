@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"time"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/ghaini/treasure-finder/constants"
@@ -37,7 +38,10 @@ func (r Rapiddns) GetAuth() string {return ""}
 func (r Rapiddns) Enumeration(domain string) (result map[string]struct{}, statusCode int, err error) {
 	result = make(map[string]struct{})
 	urlAddress := fmt.Sprintf(r.Url+"%s?full=1#result", domain)
-	resp, err := http.Get(urlAddress)
+	client := http.Client{
+		Timeout: 30 * time.Second,
+	}
+	resp, err := client.Get(urlAddress)
 	if err != nil {
 		return result, 500, err
 	}

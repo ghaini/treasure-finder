@@ -6,6 +6,7 @@ import (
 	"github.com/ghaini/treasure-finder/constants"
 	"net/http"
 	"net/url"
+	"time"
 )
 
 type Threatcrowd struct {
@@ -39,7 +40,10 @@ func (t Threatcrowd) GetAuth() string {return ""}
 func (t Threatcrowd) Enumeration(domain string) (result map[string]struct{}, statusCode int, err error) {
 	result = make(map[string]struct{})
 	urlAddress := fmt.Sprintf(t.Url+"/domain/report/?domain=%s", domain)
-	resp, err := http.Get(urlAddress)
+	client := http.Client{
+		Timeout: 30 * time.Second,
+	}
+	resp, err := client.Get(urlAddress)
 	if err != nil {
 		return result, 500, err
 	}

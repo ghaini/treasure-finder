@@ -6,6 +6,7 @@ import (
 	"github.com/ghaini/treasure-finder/constants"
 	"net/http"
 	"net/url"
+	"time"
 )
 
 type JLDC struct {
@@ -31,7 +32,10 @@ func (j JLDC) Name() string {
 func (j JLDC) Enumeration(domain string) (result map[string]struct{}, statusCode int, err error) {
 	result = make(map[string]struct{})
 	fetchURL := fmt.Sprintf(j.Url+"/%s", domain)
-	resp, err := http.Get(fetchURL)
+	client := http.Client{
+		Timeout: 30 * time.Second,
+	}
+	resp, err := client.Get(fetchURL)
 	if err != nil {
 		return result, 500, err
 	}

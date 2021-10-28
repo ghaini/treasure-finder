@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"time"
 )
 
 type TLSBufferover struct {
@@ -40,7 +41,10 @@ func (b TLSBufferover) GetAuth() string {return ""}
 func (b TLSBufferover) Enumeration(domain string) (result map[string]struct{}, statusCode int, err error) {
 	result = make(map[string]struct{})
 	urlAddress := fmt.Sprintf(b.Url+"?q=%s", domain)
-	resp, err := http.Get(urlAddress)
+	client := http.Client{
+		Timeout: 30 * time.Second,
+	}
+	resp, err := client.Get(urlAddress)
 	if err != nil {
 		return result, 500,err
 	}

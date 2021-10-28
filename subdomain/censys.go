@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"time"
 )
 
 type Censys struct {
@@ -101,7 +102,9 @@ func (c *Censys) censysRequest(domain string, page int) (*censysResponse, int, e
 		return nil, 500, err
 	}
 
-	client := &http.Client{}
+	client := http.Client{
+		Timeout: 30 * time.Second,
+	}
 	httpReq, err := http.NewRequest("POST", constants.CensysUrl, bytes.NewBuffer(reqJson))
 	if err != nil {
 		return nil, 500, err

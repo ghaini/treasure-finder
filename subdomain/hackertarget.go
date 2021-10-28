@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"time"
 )
 
 type HackerTarget struct {
@@ -38,7 +39,10 @@ func (h HackerTarget) GetAuth() string {return ""}
 func (h HackerTarget) Enumeration(domain string) (result map[string]struct{}, statusCode int, err error) {
 	result = make(map[string]struct{})
 	urlAddress := fmt.Sprintf(h.Url+"/hostsearch/?q=%s", domain)
-	res, err := http.Get(urlAddress)
+	client := http.Client{
+		Timeout: 30 * time.Second,
+	}
+	res, err := client.Get(urlAddress)
 	if err != nil {
 		return result, 500, err
 	}
