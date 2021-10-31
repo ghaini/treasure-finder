@@ -49,7 +49,7 @@ func (u UrlScan) Enumeration(domain string) (result map[string]struct{}, statusC
 	result = make(map[string]struct{})
 	fetchURL := fmt.Sprintf(u.Url+"/search/?q=domain:%s", domain)
 	client := http.Client{
-		Timeout: 30 * time.Second,
+		Timeout: 5 * time.Minute,
 	}
 	resp, err := client.Get(fetchURL)
 	if err != nil {

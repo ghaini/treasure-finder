@@ -40,7 +40,7 @@ func (h HackerTarget) Enumeration(domain string) (result map[string]struct{}, st
 	result = make(map[string]struct{})
 	urlAddress := fmt.Sprintf(h.Url+"/hostsearch/?q=%s", domain)
 	client := http.Client{
-		Timeout: 30 * time.Second,
+		Timeout: 5 * time.Minute,
 	}
 	res, err := client.Get(urlAddress)
 	if err != nil {

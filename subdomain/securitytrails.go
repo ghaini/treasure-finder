@@ -41,7 +41,7 @@ func (s *Securitytrails) Enumeration(domain string) (result map[string]struct{},
 	result = make(map[string]struct{})
 	urlAddress := fmt.Sprintf(s.Url+"/domain/%s/subdomains?apikey=%s", domain, s.token)
 	client := http.Client{
-		Timeout: 30 * time.Second,
+		Timeout: 5 * time.Minute,
 	}
 	resp, err := client.Get(urlAddress)
 	if err != nil {

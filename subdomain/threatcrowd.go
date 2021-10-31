@@ -41,7 +41,7 @@ func (t Threatcrowd) Enumeration(domain string) (result map[string]struct{}, sta
 	result = make(map[string]struct{})
 	urlAddress := fmt.Sprintf(t.Url+"/domain/report/?domain=%s", domain)
 	client := http.Client{
-		Timeout: 30 * time.Second,
+		Timeout: 5 * time.Minute,
 	}
 	resp, err := client.Get(urlAddress)
 	if err != nil {

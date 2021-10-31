@@ -103,7 +103,7 @@ func (c *Censys) censysRequest(domain string, page int) (*censysResponse, int, e
 	}
 
 	client := http.Client{
-		Timeout: 30 * time.Second,
+		Timeout: 5 * time.Minute,
 	}
 	httpReq, err := http.NewRequest("POST", constants.CensysUrl, bytes.NewBuffer(reqJson))
 	if err != nil {

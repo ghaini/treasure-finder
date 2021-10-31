@@ -39,7 +39,7 @@ func (r Rapiddns) Enumeration(domain string) (result map[string]struct{}, status
 	result = make(map[string]struct{})
 	urlAddress := fmt.Sprintf(r.Url+"%s?full=1#result", domain)
 	client := http.Client{
-		Timeout: 30 * time.Second,
+		Timeout: 5 * time.Minute,
 	}
 	resp, err := client.Get(urlAddress)
 	if err != nil {

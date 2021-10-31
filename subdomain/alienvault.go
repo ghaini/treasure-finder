@@ -39,7 +39,7 @@ func (a Alienvault) Enumeration(domain string) (result map[string]struct{}, stat
 	result = make(map[string]struct{})
 	fetchURL := fmt.Sprintf(a.Url+"/%s/passive_dns", domain)
 	client := http.Client{
-		Timeout: 30 * time.Second,
+		Timeout: 5 * time.Minute,
 	}
 	resp, err := client.Get(fetchURL)
 	if err != nil {

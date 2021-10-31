@@ -41,7 +41,7 @@ func (c Certspotter) Enumeration(domain string) (result map[string]struct{}, sta
 	result = make(map[string]struct{})
 	urlAddress := fmt.Sprintf(c.Url+"/certs?domain=%s", domain)
 	client := http.Client{
-		Timeout: 30 * time.Second,
+		Timeout: 5 * time.Minute,
 	}
 	resp, err := client.Get(urlAddress)
 	if err != nil {

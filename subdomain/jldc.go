@@ -33,7 +33,7 @@ func (j JLDC) Enumeration(domain string) (result map[string]struct{}, statusCode
 	result = make(map[string]struct{})
 	fetchURL := fmt.Sprintf(j.Url+"/%s", domain)
 	client := http.Client{
-		Timeout: 30 * time.Second,
+		Timeout: 5 * time.Minute,
 	}
 	resp, err := client.Get(fetchURL)
 	if err != nil {
