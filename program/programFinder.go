@@ -18,6 +18,7 @@ type ProgramFinder struct {
 type Program struct {
 	Name             string  `json:"name"`
 	Provider         string  `json:"provider"`
+	URL              string  `json:"url"`
 	InScopeAssets    []Asset `json:"in_scope_assets"`
 	OutOfScopeAssets []Asset `json:"out_of_scope_assets"`
 }

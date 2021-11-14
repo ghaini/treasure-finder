@@ -13,6 +13,7 @@ type HackerOne struct {
 
 type HackerOneResponse struct {
 	Name    string `json:"name"`
+	URL     string `json:"url"`
 	Targets struct {
 		InScope []struct {
 			AssetIdentifier   string `json:"asset_identifier"`
@@ -70,6 +71,7 @@ func (h HackerOne) ProgramsList() ([]Program, error) {
 
 		programs = append(programs, Program{
 			Name:             hackerOneResponse.Name,
+			URL:              hackerOneResponse.URL,
 			Provider:         "hackerOne",
 			InScopeAssets:    inScopeAssets,
 			OutOfScopeAssets: outOfScopeAssets,

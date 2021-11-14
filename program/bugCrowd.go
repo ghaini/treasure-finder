@@ -13,6 +13,7 @@ type BugCrowd struct {
 
 type BugCrowdResponse struct {
 	Name    string `json:"name"`
+	URL     string `json:"url"`
 	Targets struct {
 		InScope []struct {
 			Target string `json:"target"`
@@ -68,6 +69,7 @@ func (b BugCrowd) ProgramsList() ([]Program, error) {
 
 		programs = append(programs, Program{
 			Name:             bugCrowdResponse.Name,
+			URL:             bugCrowdResponse.URL,
 			Provider:         "bugCrowd",
 			InScopeAssets:    inScopeAssets,
 			OutOfScopeAssets: outOfScopeAssets,
